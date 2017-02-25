@@ -1,22 +1,20 @@
+dd {
+    padding-left: 1em;
+}
 
+span.glyphicon-remove, span.glyphicon-plus {
+    cursor: pointer;
+}
 
-/* ==========================================================================
-   Author's custom styles
-   ========================================================================== */
+#keyword-list li:nth-child(1) span.glyphicon-remove {
+    display: none;
+}
 
+#keyword-list li:not(:last-child) span.glyphicon-plus {
+    display: none;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#body {
+    height: 650px;
+    overflow-y: scroll;
+}
