@@ -3,18 +3,20 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
+        <title>Herovik eat your soul</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <style>
             body {
                 padding-top: 50px;
                 padding-bottom: 20px;
             }
         </style>
-        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/bootstrap-tagsinput.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.min.css">
         <link rel="stylesheet" href="css/main.css">
 
         <script src="https://vk.com/js/api/xd_connection.js?2" type="text/javascript"></script>
@@ -25,39 +27,77 @@
         <![endif]-->
     </head>
     <body>
-    <div id="body">
-        <form id="searchForm">
-            <dl>
-                <dt>Ключевые слова для поиска групп</dt>
-                <dd>
-                    <ul id="keyword-list">
-                        <li class="keyword-row"><input type="text" class="keyword" name="keyword" />
-                            <span class="glyphicon glyphicon-remove"></span>
-                            <span class="glyphicon glyphicon-plus"></span></li>
-                    </ul>
-                </dd>
-                <dt>Список групп, соответствующих запросу (10 первых для каждого ключевого слова)</dt>
-                <dd>
-                    <ul id="groups"></ul>
-                    <button id="refresh_groups">Обновить список</button>
-                </dd>
-                <dt>Список городов</dt>
-                <dd>
-                    <select name="cities" id="cities_select" multiple size="10"></select>
-                </dd>
-                <dt>Возраст</dt>
-                <dd>от <input type="number" id="age_from" value="23" min="18" max="70"/></dd>
-                <dd>до <input type="number" id="age_to" value="29" min="18" max="70"/></dd>
-            </dl>
-            <div>
-                <button id="begin">Искать</button>
+        <div class="modal fade" tabindex="-1" role="dialog" id="non-vk-modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <p>Нельзя заходить мимо ВК</p>
+                    </div>
+                </div>
             </div>
-        </form>
-        <ul id="response"></ul>
-    </div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
-    <script src="js/vendor/bootstrap.min.js"></script>
-    <script src="js/main.js"></script>
+        </div>
+        <div class="container">
+            <div class="form-group">
+                <label for="keyword-list">Ключевые слова для поиска групп</label>
+                <input type="text" class="form-control" id="keyword-list" data-role="tagsinput">
+            </div>
+
+            <div class="form-group">
+                <label>Список групп для поиска</label>
+                <a id="refresh-groups" href="#" class="glyphicon glyphicon-refresh" aria-hidden="true"></a>
+                <ul id="groups-list"></ul>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Страна</label>
+                <input type="text" class="form-control" id="country" value="Россия">
+            </div>
+
+            <div class="form-group">
+                <label for="cities-list">Города</label>
+                <input type="text" class="form-control" id="cities-list">
+            </div>
+
+            <div class="form-group">
+                <label for="schools-list">Школы</label>
+                <input type="text" class="form-control" id="schools-list">
+            </div>
+
+            <div class="form-group">
+                <label for="university-list">Университеты</label>
+                <input type="text" class="form-control" id="university-list">
+            </div>
+
+            <div class="form-group">
+                <label for="faculty-list">Факультеты</label>
+                <input type="text" class="form-control" id="faculty-list">
+            </div>
+
+            <div class="form-group">
+                <label for="age-range">Возраст</label>
+                <input type="text" class="form-control" id="age-range" data-slider-min="17" data-slider-max="70" data-slider-step="1" data-slider-value="[23,29]">
+            </div>
+
+            <div class="form-group">
+                <label>Пол</label>
+                <label class="radio-inline"><input type="radio" name="sex" value="1">Ж</label>
+                <label class="radio-inline"><input type="radio" name="sex" value="2" checked>М</label>
+                <label class="radio-inline"><input type="radio" name="sex" value="0">Любой</label>
+            </div>
+
+            <button type="submit" class="btn btn-default">Искать</button>
+
+            <div class="form-group">
+                <ul id="users-list">
+
+                </ul>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="js/vendor/bootstrap-tagsinput.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"></script>
+        <script src="js/vendor/typeahead.bundle.js"></script>
+        <script src="js/main.js"></script>
     </body>
 </html>

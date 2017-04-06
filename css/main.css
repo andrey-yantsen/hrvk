@@ -18,3 +18,96 @@ span.glyphicon-remove, span.glyphicon-plus {
     height: 650px;
     overflow-y: scroll;
 }
+
+.slider-selection {
+    background: #8283FF;
+}
+
+#refresh-groups:hover {
+    text-decoration: none;
+}
+
+.bootstrap-tagsinput {
+    width: 100%;
+}
+
+.twitter-typeahead .tt-query,
+.twitter-typeahead .tt-hint {
+    margin-bottom: 0;
+}
+
+.twitter-typeahead .tt-hint
+{
+    display: none;
+}
+
+.tt-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    list-style: none;
+    font-size: 14px;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    background-clip: padding-box;
+    cursor: pointer;
+}
+
+.tt-suggestion {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.428571429;
+    color: #333333;
+    white-space: nowrap;
+}
+
+.tt-suggestion:hover,
+.tt-suggestion:focus {
+    color: #ffffff;
+    text-decoration: none;
+    outline: 0;
+    background-color: #428bca;
+}
+
+#refresh-groups {
+    color: black;
+}
+
+#refresh-groups {
+    color: black;
+}
+
+#refresh-groups:hover {
+    text-decoration: none;
+}
+
+#refresh-groups.pending {
+    color: blue;
+}
+
+#refresh-groups.pending.spin {
+    animation: spin 2s infinite linear;
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
