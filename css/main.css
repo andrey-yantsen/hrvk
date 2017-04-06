@@ -19,6 +19,14 @@ span.glyphicon-remove, span.glyphicon-plus {
     overflow-y: scroll;
 }
 
+.slider-horizontal {
+    margin: 20px 0;
+}
+
+.slider-horizontal .tooltip {
+    z-index: 0;
+}
+
 .slider-selection {
     background: #8283FF;
 }
