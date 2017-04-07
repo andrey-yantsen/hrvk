@@ -105,7 +105,7 @@ span.glyphicon-remove, span.glyphicon-plus {
     color: blue;
 }
 
-#refresh-groups.pending.spin {
+span.spin {
     animation: spin 2s infinite linear;
 }
 

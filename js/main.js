@@ -256,7 +256,9 @@ window.onload = function () {
         }
     });
 
-    $('button').click(function() {
+    $('#search-btn').click(function() {
+        var $icon = $('span.glyphicon', this);
+        $icon.removeClass('glyphicon-search').addClass('glyphicon-refresh spin');
         var code = [];
         var $ul = $('#users-list');
         $ul.html('');
@@ -358,6 +360,7 @@ window.onload = function () {
 
             $ul.html(html);
             VK.callMethod('resizeWindow', null, $(document).height());
+            $icon.removeClass('glyphicon-refresh spin').addClass('glyphicon-search');
         });
         return false;
     });
