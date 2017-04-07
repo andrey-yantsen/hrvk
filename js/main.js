@@ -72,16 +72,16 @@ window.onload = function () {
                     for (var key in items) {
                         if (items.hasOwnProperty(key)) {
                             var group = items[key];
-                            var group_id = group.id.toString();
+                            var groupId = group.id.toString();
 
-                            if (addedGroups.indexOf(group_id) !== -1) {
+                            if (addedGroups.indexOf(groupId) !== -1) {
                                 continue;
                             } else {
-                                addedGroups.push(group_id);
+                                addedGroups.push(groupId);
                             }
 
-                            var html = '<li><input type="checkbox" name="group[]" value="' + group_id + '" checked/> ' +
-                                '<a href="https://vk.com/public' + group_id + '" target="_blank">' + group.name + '</a></li>';
+                            var html = '<li><input type="checkbox" name="group[]" value="' + groupId + '" checked/> ' +
+                                '<a href="https://vk.com/public' + groupId + '" target="_blank">' + group.name + '</a></li>';
                             $ul.append(html);
                         }
                     }
@@ -272,11 +272,14 @@ window.onload = function () {
             count: 1000
         }];
 
+        var groups = {};
         var ret = [];
         $('input[name="group[]"]:checked').each(function () {
+            var groupId = parseInt(this.value);
+            groups[groupId] = $(this).next().text();
             for (var r in requests) {
                 var req = JSON.parse(JSON.stringify(requests[r]));
-                req['group_id'] = parseInt(this.value);
+                req['group_id'] = groupId;
                 ret.push(req);
             }
         });
@@ -326,23 +329,31 @@ window.onload = function () {
         var users = {};
         VK.api('execute', {code: 'return [' + code.join(',') + '];'}, function (data) {
             for (var r in data.response) {
+                var searchRequest = requests[r];
                 var items = data.response[r].items;
                 for (var key in items) {
                     if (items.hasOwnProperty(key)) {
                         var user = items[key];
-                        if (users.hasOwnProperty(user.id)) {
-                            users[user.id].occurencies++;
-                        } else {
-                            user.occurencies = 1;
+                        if (!users.hasOwnProperty(user.id)) {
+                            user.occurencies = 0;
+                            user.groups = [];
                             users[user.id] = user;
+                        }
+                        users[user.id].occurencies++;
+
+                        if (searchRequest.hasOwnProperty('group_id')) {
+                            users[user.id].groups.push({
+                                id: searchRequest.group_id,
+                                title: groups[searchRequest.group_id]
+                            });
                         }
                     }
                 }
             }
 
             var sortable = [];
-            for (var user_id in users) {
-                sortable.push([users[user_id], users[user_id].occurencies]);
+            for (var userId in users) {
+                sortable.push([users[userId], users[userId].occurencies]);
             }
 
             sortable.sort(function (a, b) {
@@ -352,10 +363,24 @@ window.onload = function () {
             var html = '';
 
             for (var idx in sortable) {
-                var user = sortable[idx][0];
+                var u = sortable[idx][0];
                 var cnt = sortable[idx][1];
-                var name = user.last_name + ' ' + user.first_name;
-                html += '<li><a href="https://vk.com/id' + user.id.toString() + '">' + name + '</a> (' + cnt.toString() + ')</li>';
+                var name = u.last_name + ' ' + u.first_name;
+                var userGroups = [];
+
+                for (gid in u.groups) {
+                    if (u.groups.hasOwnProperty(gid)) {
+                        var group = u.groups[gid];
+                        userGroups.push('<a href="https://vk.com/public' + group.id.toString() + '">' + group.title + '</a>');
+                    }
+                }
+
+                var appendix = cnt.toString();
+                if (userGroups.length) {
+                    appendix = userGroups.join(', ')
+                }
+
+                html += '<li><a href="https://vk.com/id' + u.id.toString() + '">' + name + '</a> (' + appendix + ')</li>';
             }
 
             $ul.html(html);
