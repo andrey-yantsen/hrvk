@@ -7,6 +7,22 @@ window.onload = function () {
 
     var countriesMap = {};
 
+    var countries = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace
+    });
+
+    var $country = $('#country');
+    $country.typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        },
+        {
+            name: 'countries',
+            source: countries
+        });
+
     VK.init(function () {
         VK.api('database.getCountries', {
             need_all: 1,
@@ -14,6 +30,7 @@ window.onload = function () {
         }, function (data) {
             for (v in data.response.items) {
                 countriesMap[data.response.items[v].title] = data.response.items[v].id;
+                countries.add(data.response.items[v].title);
             }
         });
     }, function () {
