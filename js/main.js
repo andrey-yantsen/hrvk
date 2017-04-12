@@ -58,7 +58,7 @@ window.onload = function () {
             var code = [];
 
             $.each($("#keyword-list").tagsinput('items'), function(idx, value) {
-                code.push('API.groups.search(' + JSON.stringify({q: value, type: 'group', count: 10}) + ')');
+                code.push('API.groups.search(' + JSON.stringify({q: value, count: 10}) + ')');
             });
 
             if (code.length === 0) {
