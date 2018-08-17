@@ -48,49 +48,49 @@ window.onload = function () {
     $('#keyword-list').on('itemAdded', refreshBtnAddClassGen('pending'))
         .on('itemRemoved', refreshBtnAddClassGen('pending'));
 
-    $refreshGroupsGI.on('click', function() {
-            $refreshGroupsGI.addClass('spin');
-            var $ul = $('#groups-list');
-            var addedGroups = [];
-            $ul.html('');
+    $refreshGroupsGI.on('click', function () {
+        $refreshGroupsGI.addClass('spin');
+        var $ul = $('#groups-list');
+        var addedGroups = [];
+        $ul.html('');
 
-            var code = [];
+        var code = [];
 
-            $.each($("#keyword-list").tagsinput('items'), function(idx, value) {
-                code.push('API.groups.search(' + JSON.stringify({q: value, count: 10}) + ')');
-            });
+        $.each($("#keyword-list").tagsinput('items'), function (idx, value) {
+            code.push('API.groups.search(' + JSON.stringify({q: value, count: 10}) + ')');
+        });
 
-            if (code.length === 0) {
-                $refreshGroupsGI.removeClass('spin pending');
-                return false;
-            }
+        if (code.length === 0) {
+            $refreshGroupsGI.removeClass('spin pending');
+            return false;
+        }
 
-            VK.api('execute', {'code': 'return [' + code.join(',') + '];'}, function (data) {
-                for (var idx in data.response) {
-                    var items = data.response[idx].items;
-                    for (var key in items) {
-                        if (items.hasOwnProperty(key)) {
-                            var group = items[key];
-                            var groupId = group.id.toString();
+        VK.api('execute', {'code': 'return [' + code.join(',') + '];'}, function (data) {
+            for (var idx in data.response) {
+                var items = data.response[idx].items;
+                for (var key in items) {
+                    if (items.hasOwnProperty(key)) {
+                        var group = items[key];
+                        var groupId = group.id.toString();
 
-                            if (addedGroups.indexOf(groupId) !== -1) {
-                                continue;
-                            } else {
-                                addedGroups.push(groupId);
-                            }
-
-                            var html = '<li><input type="checkbox" name="group[]" value="' + groupId + '" checked/> ' +
-                                '<a href="https://vk.com/public' + groupId + '" target="_blank">' + $('<div/>').text(group.name).html() + '</a></li>';
-                            $ul.append(html);
+                        if (addedGroups.indexOf(groupId) !== -1) {
+                            continue;
+                        } else {
+                            addedGroups.push(groupId);
                         }
+
+                        var html = '<li><input type="checkbox" name="group[]" value="' + groupId + '" checked/> ' +
+                            '<a href="https://vk.com/public' + groupId + '" target="_blank">' + $('<div/>').text(group.name).html() + '</a></li>';
+                        $ul.append(html);
                     }
                 }
-                VK.callMethod('resizeWindow', null, $(document).height());
-                $refreshGroupsGI.removeClass('spin pending');
-            });
-
-            return false;
+            }
+            VK.callMethod('resizeWindow', null, $(document).height());
+            $refreshGroupsGI.removeClass('spin pending');
         });
+
+        return false;
+    });
 
     var cities = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
@@ -106,7 +106,7 @@ window.onload = function () {
                     return false;
                 }
                 var countryId = countriesMap[countryName];
-                VK.api('database.getCities', {country_id: countryId, q: term, need_all: 1, count: 50}, function(data) {
+                VK.api('database.getCities', {country_id: countryId, q: term, need_all: 1, count: 50}, function (data) {
                     onSuccess(data.response.items);
                 });
             }
@@ -135,13 +135,13 @@ window.onload = function () {
                 var code = [];
                 var cities = {};
 
-                $.each($('#cities-list').tagsinput('items'), function(key, value) {
+                $.each($('#cities-list').tagsinput('items'), function (key, value) {
                     cities[key] = value.title;
                     var options = {city_id: value.id, q: term};
                     code.push('API.database.getSchools(' + JSON.stringify(options) + ')');
                 });
 
-                VK.api('execute', {code: 'return [' + code.join(',') + '];'}, function(data) {
+                VK.api('execute', {code: 'return [' + code.join(',') + '];'}, function (data) {
                     var schools = [];
                     for (var idx in data.response) {
                         var items = data.response[idx].items;
@@ -180,13 +180,13 @@ window.onload = function () {
                 var code = [];
                 var cities = {};
 
-                $.each($('#cities-list').tagsinput('items'), function(key, value) {
+                $.each($('#cities-list').tagsinput('items'), function (key, value) {
                     cities[key] = value.title;
                     var options = {city_id: value.id, q: term};
                     code.push('API.database.getUniversities(' + JSON.stringify(options) + ')');
                 });
 
-                VK.api('execute', {code: 'return [' + code.join(',') + '];'}, function(data) {
+                VK.api('execute', {code: 'return [' + code.join(',') + '];'}, function (data) {
                     var universities = [];
                     for (var idx in data.response) {
                         var items = data.response[idx].items;
@@ -219,18 +219,18 @@ window.onload = function () {
         queryTokenizer: Bloodhound.tokenizers.whitespace
     });
 
-    var refreshFaculties = function() {
+    var refreshFaculties = function () {
         faculty.clear();
         var code = [];
         var universities = {};
 
-        $.each($('#university-list').tagsinput('items'), function(key, value) {
+        $.each($('#university-list').tagsinput('items'), function (key, value) {
             universities[key] = value.title;
             var options = {university_id: value.id};
             code.push('API.database.getFaculties(' + JSON.stringify(options) + ')');
         });
 
-        VK.api('execute', {code: 'return [' + code.join(',') + '];'}, function(data) {
+        VK.api('execute', {code: 'return [' + code.join(',') + '];'}, function (data) {
             for (var idx in data.response) {
                 var items = data.response[idx].items;
                 for (var key in items) {
@@ -255,7 +255,7 @@ window.onload = function () {
         }
     });
 
-    $('#search-btn').click(function() {
+    $('#search-btn').click(function () {
         var $icon = $('span.glyphicon', this);
         $icon.removeClass('glyphicon-search').addClass('glyphicon-refresh spin');
         var $ul = $('#users-list');
@@ -289,7 +289,7 @@ window.onload = function () {
         });
         requests = ret.length ? ret : requests;
         ret = [];
-        $.each($('#cities-list').tagsinput('items'), function(key, value) {
+        $.each($('#cities-list').tagsinput('items'), function (key, value) {
             for (var r in requests) {
                 var req = requests[r];
                 req['city'] = value.id;
@@ -298,7 +298,7 @@ window.onload = function () {
         });
         requests = ret.length ? ret : requests;
         ret = [];
-        $.each($('#schools-list').tagsinput('items'), function(key, value) {
+        $.each($('#schools-list').tagsinput('items'), function (key, value) {
             for (var r in requests) {
                 var req = requests[r];
                 req['school'] = value.id;
@@ -307,7 +307,7 @@ window.onload = function () {
         });
         requests = ret.length ? ret : requests;
         ret = [];
-        $.each($('#university-list').tagsinput('items'), function(key, value) {
+        $.each($('#university-list').tagsinput('items'), function (key, value) {
             for (var r in requests) {
                 var req = requests[r];
                 req['university'] = value.id;
@@ -316,7 +316,7 @@ window.onload = function () {
         });
         requests = ret.length ? ret : requests;
         ret = [];
-        $.each($('#faculty-list').tagsinput('items'), function(key, value) {
+        $.each($('#faculty-list').tagsinput('items'), function (key, value) {
             for (var r in requests) {
                 var req = requests[r];
                 req['university_faculty'] = value.id;
