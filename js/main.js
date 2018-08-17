@@ -52,7 +52,6 @@ window.onload = function () {
             $refreshGroupsGI.addClass('spin');
             var $ul = $('#groups-list');
             var addedGroups = [];
-            var delay = 0;
             $ul.html('');
 
             var code = [];
@@ -81,7 +80,7 @@ window.onload = function () {
                             }
 
                             var html = '<li><input type="checkbox" name="group[]" value="' + groupId + '" checked/> ' +
-                                '<a href="https://vk.com/public' + groupId + '" target="_blank">' + group.name + '</a></li>';
+                                '<a href="https://vk.com/public' + groupId + '" target="_blank">' + $('<div/>').text(group.name).html() + '</a></li>';
                             $ul.append(html);
                         }
                     }
@@ -159,7 +158,7 @@ window.onload = function () {
         }
     });
 
-    var $elt = $('#schools-list');
+    $elt = $('#schools-list');
     $elt.tagsinput({
         itemValue: 'id',
         itemText: 'title',
@@ -204,7 +203,7 @@ window.onload = function () {
         }
     });
 
-    var $elt = $('#university-list');
+    $elt = $('#university-list');
     $elt.tagsinput({
         itemValue: 'id',
         itemText: 'title',
@@ -245,7 +244,7 @@ window.onload = function () {
     };
     $elt.on('itemAdded', refreshFaculties).on('itemRemoved', refreshFaculties);
 
-    var $elt = $('#faculty-list');
+    $elt = $('#faculty-list');
     $elt.tagsinput({
         itemValue: 'id',
         itemText: 'title',
@@ -259,7 +258,6 @@ window.onload = function () {
     $('#search-btn').click(function() {
         var $icon = $('span.glyphicon', this);
         $icon.removeClass('glyphicon-search').addClass('glyphicon-refresh spin');
-        var code = [];
         var $ul = $('#users-list');
         $ul.html('');
 
@@ -271,6 +269,12 @@ window.onload = function () {
             age_to: ages[1],
             count: 1000
         }];
+
+        var $hometown = $('#hometown');
+
+        if ($hometown.val()) {
+            requests[0]['hometown'] = $hometown.val();
+        }
 
         var groups = {};
         var ret = [];
@@ -322,7 +326,7 @@ window.onload = function () {
         requests = ret.length ? ret : requests;
         console.log(requests);
 
-        code = [];
+        var code = [];
         for (var r in requests) {
             code.push('API.users.search(' + JSON.stringify(requests[r]) + ')');
         }
@@ -353,7 +357,9 @@ window.onload = function () {
 
             var sortable = [];
             for (var userId in users) {
-                sortable.push([users[userId], users[userId].occurencies]);
+                if (users.hasOwnProperty(userId)) {
+                    sortable.push([users[userId], users[userId].occurencies]);
+                }
             }
 
             sortable.sort(function (a, b) {
@@ -368,7 +374,7 @@ window.onload = function () {
                 var name = u.last_name + ' ' + u.first_name;
                 var userGroups = [];
 
-                for (gid in u.groups) {
+                for (var gid in u.groups) {
                     if (u.groups.hasOwnProperty(gid)) {
                         var group = u.groups[gid];
                         userGroups.push('<a href="https://vk.com/public' + group.id.toString() + '">' + group.title + '</a>');
