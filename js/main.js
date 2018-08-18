@@ -1,4 +1,6 @@
 window.onload = function () {
+    VK.callMethod('resizeWindow', null, $(document).height());
+
     $("#age-range").slider({
         tooltip: 'always',
         selection: 'after',
@@ -51,8 +53,11 @@ window.onload = function () {
     $refreshGroupsGI.on('click', function () {
         $refreshGroupsGI.addClass('spin');
         var $ul = $('#groups-list');
+        var $gic = $('#groups-in-common');
         var addedGroups = [];
         $ul.html('');
+        $gic.html('');
+        $('#group-in-common-container').addClass('hidden');
 
         var code = [];
 
@@ -386,10 +391,108 @@ window.onload = function () {
                     appendix = userGroups.join(', ')
                 }
 
-                html += '<li><a href="https://vk.com/id' + u.id.toString() + '">' + name + '</a> (' + appendix + ')</li>';
+                html += '<li><input type="checkbox" value="' + u.id.toString() + '" class="user-interested"/> <a href="https://vk.com/id' + u.id.toString() + '">' + name + '</a> (' + appendix + ')</li>';
             }
 
             $ul.html(html);
+            VK.callMethod('resizeWindow', null, $(document).height());
+            $icon.removeClass('glyphicon-refresh spin').addClass('glyphicon-search');
+        });
+        return false;
+    });
+
+    var uidsInterests = {};
+    $('#users-list').on('change', '.user-interested', function () {
+        if (this.checked) {
+            uidsInterests[this.value] = true;
+        } else {
+            delete uidsInterests[this.value];
+        }
+
+        if (uidsInterests.length < 2) {
+            $('#search-common-groups').addClass('disabled');
+        } else {
+            $('#search-common-groups').removeClass('disabled');
+        }
+    });
+
+    $('#search-common-groups').click(function () {
+        if (uidsInterests.length < 2) {
+            return false;
+        }
+
+        var $icon = $('span.glyphicon', this);
+        $icon.removeClass('glyphicon-search').addClass('glyphicon-refresh spin');
+
+        var code = [];
+        var requests = [];
+        for (var uid in uidsInterests) {
+            if (uidsInterests.hasOwnProperty(uid)) {
+                var req = {user_id: uid, extended: 1, count: 1000};
+                requests.push(req);
+                code.push('API.groups.get(' + JSON.stringify(req) + ')');
+            }
+        }
+
+        var commonGroups = {};
+        VK.api('execute', {code: 'return [' + code.join(',') + '];'}, function (data) {
+            var groupsWithMultipleUsers = [];
+            for (var r in data.response) {
+                var items = data.response[r].items;
+                for (var key in items) {
+                    if (items.hasOwnProperty(key)) {
+                        var group = items[key];
+                        if (!commonGroups.hasOwnProperty(group.id)) {
+                            commonGroups[group.id] = {
+                                id: group.id,
+                                occurencies: 0,
+                                name: group.name,
+                                screen_name: group.screen_name,
+                                is_closed: group.is_closed === 1
+                            };
+                        }
+                        commonGroups[group.id].occurencies++;
+
+                        if (commonGroups[group.id].occurencies === 2) {
+                            groupsWithMultipleUsers.push(group.id);
+                        }
+                    }
+                }
+            }
+
+            if (groupsWithMultipleUsers.length > 0) {
+                var sortable = [];
+                for (var idx in groupsWithMultipleUsers) {
+                    if (commonGroups.hasOwnProperty(groupsWithMultipleUsers[idx])) {
+                        sortable.push([commonGroups[groupsWithMultipleUsers[idx]], commonGroups[groupsWithMultipleUsers[idx]].occurencies]);
+                    }
+                }
+
+                sortable.sort(function (a, b) {
+                    return b[1] - a[1];
+                });
+
+                var html = '';
+
+                for (idx in sortable) {
+                    var group = sortable[idx][0];
+                    var cnt = sortable[idx][1];
+                    var name = group.name;
+
+                    var appendix = 'есть у ' + cnt.toString() + ' человек';
+                    if (group.is_closed) {
+                        appendix += ', закрытая';
+                    }
+
+                    html += '<li><a href="https://vk.com/public' + group.id.toString() + '">' + name + '</a> (' + appendix + ')</li>';
+                }
+
+                $('#groups-in-common').html(html);
+                $('#group-in-common-container').removeClass('hidden');
+            } else {
+                alert('У выбранных людей нет общих групп :(');
+            }
+
             VK.callMethod('resizeWindow', null, $(document).height());
             $icon.removeClass('glyphicon-refresh spin').addClass('glyphicon-search');
         });
