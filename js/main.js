@@ -85,7 +85,7 @@ window.onload = function () {
                         }
 
                         var html = '<li><input type="checkbox" name="group[]" value="' + groupId + '" checked/> ' +
-                            '<a href="https://vk.com/public' + groupId + '" target="_blank">' + $('<div/>').text(group.name).html() + '</a></li>';
+                            '<a target="_blank" href="https://vk.com/public' + groupId + '" target="_blank">' + $('<div/>').text(group.name).html() + '</a></li>';
                         $ul.append(html);
                     }
                 }
@@ -382,7 +382,7 @@ window.onload = function () {
                 for (var gid in u.groups) {
                     if (u.groups.hasOwnProperty(gid)) {
                         var group = u.groups[gid];
-                        userGroups.push('<a href="https://vk.com/public' + group.id.toString() + '">' + group.title + '</a>');
+                        userGroups.push('<a target="_blank" href="https://vk.com/public' + group.id.toString() + '">' + group.title + '</a>');
                     }
                 }
 
@@ -391,7 +391,7 @@ window.onload = function () {
                     appendix = userGroups.join(', ')
                 }
 
-                html += '<li><input type="checkbox" value="' + u.id.toString() + '" class="user-interested"/> <a href="https://vk.com/id' + u.id.toString() + '">' + name + '</a> (' + appendix + ')</li>';
+                html += '<li><input type="checkbox" value="' + u.id.toString() + '" class="user-interested"/> <a target="_blank" href="https://vk.com/id' + u.id.toString() + '">' + name + '</a> (' + appendix + ')</li>';
             }
 
             $ul.html(html);
@@ -484,7 +484,7 @@ window.onload = function () {
                         appendix += ', закрытая';
                     }
 
-                    html += '<li><a href="https://vk.com/public' + group.id.toString() + '">' + name + '</a> (' + appendix + ')</li>';
+                    html += '<li><a target="_blank" href="https://vk.com/public' + group.id.toString() + '">' + name + '</a> (' + appendix + ')</li>';
                 }
 
                 $('#groups-in-common').html(html);
