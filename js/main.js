@@ -53,10 +53,9 @@ window.onload = function () {
     $refreshGroupsGI.on('click', function () {
         $refreshGroupsGI.addClass('spin');
         var $ul = $('#groups-list');
-        var $gic = $('#groups-in-common');
         var addedGroups = [];
+        $('#groups-in-common').html('');
         $ul.html('');
-        $gic.html('');
         $('#group-in-common-container').addClass('hidden');
 
         var code = [];
@@ -260,10 +259,15 @@ window.onload = function () {
         }
     });
 
+    var uidsInterests = {};
+
     $('#search-btn').click(function () {
         var $icon = $('span.glyphicon', this);
         $icon.removeClass('glyphicon-search').addClass('glyphicon-refresh spin');
         var $ul = $('#users-list');
+        $('#groups-in-common').html('');
+        uidsInterests = {};
+        $('#search-common-groups').addClass('disabled');
         $ul.html('');
 
         var ages = $("#age-range").slider('getValue');
@@ -401,7 +405,6 @@ window.onload = function () {
         return false;
     });
 
-    var uidsInterests = {};
     $('#users-list').on('change', '.user-interested', function () {
         if (this.checked) {
             uidsInterests[this.value] = true;
