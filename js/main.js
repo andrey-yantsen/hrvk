@@ -37,7 +37,7 @@ window.onload = function () {
         });
     }, function () {
         alert('Something failed, sorry');
-    }, '5.62');
+    }, '5.131');
 
     var $refreshGroupsGI = $('#refresh-groups');
 
